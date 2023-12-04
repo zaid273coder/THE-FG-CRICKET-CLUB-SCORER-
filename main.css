@@ -63,16 +63,15 @@ table {
 
 td,
 th {
-	border: 1px solid #dddddd0f;
+	border: 1px solid #dddddd;
 	text-align: left;
 	padding: 8px;
 }
 
 tr:nth-child(even) {
-	background-color: white;
+	background-color: #dddddd;
 }
 
 .material-symbols-outlined {
 	font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 200, "opsz" 24;
 }
-
