@@ -1,14 +1,13 @@
-var scoreboard = [[], [0]];
-var ball_no = 1;
-var over_no = 1;
+var scoreboard = [[], [0]]; //scoreboard[<over_no>][0] counts wide runs
+var ball_no = 1; // Ball number will start from 1
+var over_no = 1; // Over number will start from 1
 var runs = 0;
 var edited = [];
 var isNoBall = false;
 var isTargetMode = false;
-var targetRuns = -1;
-var targetOvers = -1;
+var targetRuns = -1; // total runs scored by other team
+var targetOvers = -1; //total overs
 var isShareMode = false;
-var totalBalls = 0;
 
 $(document).ready(function () {
 	$("#run_dot").on("click", function (event) {
@@ -50,26 +49,29 @@ function init() {
 	console.log(urlParams.get("debug"));
 	if (urlParams.get("debug") == null || urlParams.get("debug") != "true")
 		$("#messages").hide();
+	// const queryString = window.location.search;
+	// const urlParams = new URLSearchParams(queryString);
+	// console.log(urlParams.get("matchCode"));
+	// console.log(document.location.origin);
 }
 
-function calculateAromaticRunRate() {
-	if (totalBalls === 0) return 0;
-
-	const aromaticRunRate = (runs / totalBalls) * 6;
-	updateHtml("#aromatic-run-rate", aromaticRunRate.toFixed(2));
+function shareModeStart() {
+	isShareMode = true;
+	startConnect();
 }
 
 function play_ball(run, score = 1) {
-	totalBalls++;
-
 	if (run == "+") {
+		//Wide ball
 		runs++;
 		scoreboard[over_no][0] += 1;
 		update_score();
 		return;
 	}
 	if (run == "NB") {
+		// isNoBall = true;
 		noBall(true);
+		//No ball
 		runs++;
 		scoreboard[over_no][0] += 1;
 		update_score();
@@ -78,25 +80,29 @@ function play_ball(run, score = 1) {
 	if (score == 1) {
 		runs += run;
 	}
+	// console.log("over_no=", over_no, "| ball_no=", ball_no," |Runs=",runs);
 
 	if (isNoBall) {
 		scoreboard[over_no][0] += run == "D" ? 0 : run;
+		// isNoBall = false;
 		noBall(false);
 	} else {
 		scoreboard[over_no][ball_no] = run;
+		// console.log(scoreboard[over_no]);
+		// console.log(scoreboard);
 		update_runboard();
 		ball_no++;
 		if (ball_no >= 7) {
 			ball_no = 1;
 			over_no++;
 			scoreboard[over_no] = [];
-			scoreboard[over_no][0] = 0;
+			scoreboard[over_no][0] = 0; //Wide bowls counter
 		}
 	}
 	update_score();
 	update_scoreboard();
-	calculateAromaticRunRate();
 }
+
 function update_runboard() {
 	// Updates the runboard when the function is called
 	for (i = 1; i < 7; i++) {
@@ -324,4 +330,4 @@ function sendInitVariables() {
 			isTargetMode: isTargetMode,
 		})
 	);
-}
+		  }
